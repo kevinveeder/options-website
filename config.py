@@ -1,5 +1,10 @@
 # config.py — All configurables in one place
 
+import os
+
+SITE_URL        = os.environ.get("SITE_URL", "https://options-website.onrender.com")
+GOATCOUNTER_URL = os.environ.get("GOATCOUNTER_URL", "")  # e.g. https://yourcode.goatcounter.com
+
 APP_CONFIG = {
     "title": "Options Strategies",
     "subtitle": "An interactive guide to understanding options",

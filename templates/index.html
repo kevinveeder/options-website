@@ -3,9 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config.title }}</title>
+
+    <title>{{ config.title }} — Learn Options Strategies Interactively</title>
+    <meta name="description" content="Learn options trading strategies in plain English. Interactive payoff diagrams, live stock prices, and step-by-step explanations for Long Call, Long Put, Covered Call, and Bull Call Spread.">
+    <meta name="keywords" content="options trading, options strategies, long call, long put, covered call, bull call spread, options education, learn options, options payoff diagram">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="{{ site_url }}/">
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="{{ site_url }}/">
+    <meta property="og:title"       content="{{ config.title }} — Learn Options Strategies">
+    <meta property="og:description" content="Interactive, beginner-friendly guide to options trading strategies. Live stock prices, slider-based examples, plain-English explanations.">
+    <meta property="og:site_name"   content="{{ config.title }}">
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card"        content="summary">
+    <meta name="twitter:title"       content="{{ config.title }} — Learn Options Strategies">
+    <meta name="twitter:description" content="Interactive options education: Long Call, Long Put, Covered Call, Bull Call Spread. Live prices, real examples.">
+
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "{{ config.title }}",
+      "url": "{{ site_url }}/",
+      "description": "A free interactive educational tool for learning options trading strategies through live examples and payoff diagrams.",
+      "applicationCategory": "EducationalApplication",
+      "isAccessibleForFree": true,
+      "inLanguage": "en",
+      "about": {
+        "@type": "Thing",
+        "name": "Options Trading Strategies",
+        "description": "Financial derivatives education covering Long Call, Long Put, Covered Call, and Bull Call Spread strategies."
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    {% if goatcounter_url %}
+    <script data-goatcounter="{{ goatcounter_url }}/count"
+            async src="//gc.zgo.at/count.js"></script>
+    {% endif %}
 </head>
 <body>
 

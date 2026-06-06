@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, send_from_directory
 import yfinance as yf
 import time
 import threading
@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 import requests as _requests
 
 from config import APP_CONFIG, STRATEGIES, DEFAULT_TICKERS, \
-                   HEALTHCHECK_URL, HEALTHCHECK_HOUR, HEALTHCHECK_MIN
+                   HEALTHCHECK_URL, HEALTHCHECK_HOUR, HEALTHCHECK_MIN, \
+                   SITE_URL, GOATCOUNTER_URL
 
 app = Flask(__name__)
 _price_cache: dict = {}
@@ -67,6 +68,8 @@ def index():
         config=APP_CONFIG,
         strategies=STRATEGIES,
         default_tickers=DEFAULT_TICKERS,
+        site_url=SITE_URL,
+        goatcounter_url=GOATCOUNTER_URL,
     )
 
 
@@ -76,6 +79,22 @@ def price(ticker):
     if "error" in result:
         return jsonify(result), 400
     return jsonify(result)
+
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory("static", "robots.txt")
+
+
+@app.route("/llms.txt")
+def llms():
+    return send_from_directory("static", "llms.txt")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    xml = render_template("sitemap.xml", site_url=SITE_URL)
+    return app.response_class(xml, mimetype="application/xml")
 
 
 if __name__ == "__main__":

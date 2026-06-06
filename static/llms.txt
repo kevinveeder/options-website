@@ -1,0 +1,29 @@
+# Options Strategies
+
+> A free, interactive educational guide for learning how options trading strategies work.
+> Not a trading tool — designed purely to help beginners understand options concepts.
+
+This site explains options strategies in plain English with live stock prices and interactive
+payoff diagrams. Adjust sliders to see real-dollar examples for any stock in real time.
+
+## Strategies covered
+
+- **Long Call** — Bet a stock will rise. Pay a premium for the right to buy at a set strike price. Limited risk, unlimited upside.
+- **Long Put** — Bet a stock will fall. Pay a premium for the right to sell at a set strike price. Often used as portfolio insurance.
+- **Covered Call** — Already own the stock? Sell a call to collect premium income, capping your upside in exchange.
+- **Bull Call Spread** — Buy a call at a lower strike, sell one at a higher strike. Reduces cost vs. a naked long call; caps max profit.
+
+## How the site works
+
+Each strategy page shows:
+1. A plain-English explanation
+2. A step-by-step walkthrough using live stock prices and user-selected parameters
+3. Key numbers: break-even price, max profit, max loss
+4. A payoff-at-expiration chart
+
+Stock prices are fetched live via yfinance. Parameters (strike, premium) are controlled by sliders
+and all values update in real time.
+
+## Content
+
+- [Options Strategies — Home](https://options-website.onrender.com): All strategies, interactive examples, live prices
