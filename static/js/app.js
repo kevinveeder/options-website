@@ -2,6 +2,7 @@
 
 let currentStrategy = null;
 let currentSpot = 150;
+let currentTicker = DEFAULT_TICKER;
 let payoffChart = null;
 let sliderValues = {};
 
@@ -51,10 +52,10 @@ function selectStrategy(key) {
     );
 
     document.getElementById("strategy-name").textContent = s.name;
+    document.getElementById("strategy-hook").textContent = s.hook;
     document.getElementById("strategy-description").textContent = s.description;
-
-    const list = document.getElementById("mechanics-list");
-    list.innerHTML = s.mechanics.map(m => `<li>${m}</li>`).join("");
+    document.getElementById("mechanics-list").innerHTML =
+        s.mechanics.map(m => `<li>${m}</li>`).join("");
 
     renderSliders(s.params);
     redraw();
@@ -126,6 +127,7 @@ async function fetchPrice(ticker) {
             showPriceState(ticker, null, data.error);
         } else {
             currentSpot = data.price;
+            currentTicker = data.ticker;
             showPriceState(data.ticker, data.price, null);
             refreshAllSliderLabels();
             redraw();
@@ -147,13 +149,57 @@ function showPriceState(ticker, price, error) {
         error ? error : `$${price.toFixed(2)}`;
 }
 
-// ── Chart ─────────────────────────────────────────────────────────────────────
+// ── Redraw all dynamic sections ───────────────────────────────────────────────
 
 function redraw() {
     if (!currentStrategy) return;
     const calc = STRATEGIES[currentStrategy];
     if (!calc) return;
 
+    const kp = calc.keyPoints(sliderValues, currentSpot);
+    renderKeyPoints(kp);
+    renderExample(calc);
+    renderChart(kp.breakEven);
+}
+
+// ── Example walkthrough ───────────────────────────────────────────────────────
+
+function renderExample(calc) {
+    const steps = calc.example(sliderValues, currentSpot, currentTicker);
+
+    document.getElementById("example-context").textContent =
+        `With ${currentTicker} at $${currentSpot.toFixed(2)}:`;
+
+    document.getElementById("example-steps").innerHTML =
+        steps.map(s => `<li>${s}</li>`).join("");
+}
+
+// ── Key numbers ───────────────────────────────────────────────────────────────
+
+function renderKeyPoints(kp) {
+    const fmtMoney = v => (typeof v === "string") ? v : `${v >= 0 ? "+" : ""}$${Math.abs(v).toFixed(2)}`;
+    const fmtPrice = v => (typeof v === "string") ? v : `$${v.toFixed(2)}`;
+
+    document.getElementById("key-points").innerHTML = `
+        <div class="key-point">
+            <span class="key-label">Break-even at expiration</span>
+            <span class="key-value">${fmtPrice(kp.breakEven)}</span>
+        </div>
+        <div class="key-point">
+            <span class="key-label">Max profit</span>
+            <span class="key-value profit">${fmtMoney(kp.maxProfit)}</span>
+        </div>
+        <div class="key-point">
+            <span class="key-label">Max loss</span>
+            <span class="key-value loss">${fmtMoney(kp.maxLoss)}</span>
+        </div>
+    `;
+}
+
+// ── Chart ─────────────────────────────────────────────────────────────────────
+
+function renderChart(breakEven) {
+    const calc = STRATEGIES[currentStrategy];
     const range = PRICE_RANGE_PCT;
     const minP = currentSpot * (1 - range);
     const maxP = currentSpot * (1 + range);
@@ -161,53 +207,17 @@ function redraw() {
 
     const prices = Array.from({ length: n + 1 }, (_, i) => minP + (maxP - minP) * i / n);
     const payoffs = calc.calculate(prices, sliderValues, currentSpot);
-    const kp = calc.keyPoints(sliderValues, currentSpot);
 
-    renderKeyPoints(kp);
-    renderChart(prices, payoffs, kp.breakEven);
-}
-
-// ── Key points display ────────────────────────────────────────────────────────
-
-function renderKeyPoints(kp) {
-    const fmt = v => (typeof v === "string") ? v : `${v >= 0 ? "+" : ""}$${v.toFixed(2)}`;
-    const fmtPrice = v => (typeof v === "string") ? v : `$${v.toFixed(2)}`;
-
-    document.getElementById("key-points").innerHTML = `
-        <div class="key-point">
-            <span class="key-label">Break-even</span>
-            <span class="key-value">${fmtPrice(kp.breakEven)}</span>
-        </div>
-        <div class="key-point">
-            <span class="key-label">Max Profit</span>
-            <span class="key-value profit">${fmt(kp.maxProfit)}</span>
-        </div>
-        <div class="key-point">
-            <span class="key-label">Max Loss</span>
-            <span class="key-value loss">${fmt(kp.maxLoss)}</span>
-        </div>
-    `;
-}
-
-// ── Chart rendering ───────────────────────────────────────────────────────────
-
-function renderChart(prices, payoffs, breakEven) {
     const ctx = document.getElementById("payoff-chart").getContext("2d");
-
-    if (payoffChart) {
-        payoffChart.destroy();
-        payoffChart = null;
-    }
-
-    const data = prices.map((x, i) => ({ x, y: payoffs[i] }));
+    if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
 
     payoffChart = new Chart(ctx, {
         type: "line",
         data: {
             datasets: [{
-                data,
+                data: prices.map((x, i) => ({ x, y: payoffs[i] })),
                 borderColor: "#2563eb",
-                borderWidth: 2.5,
+                borderWidth: 2,
                 pointRadius: 0,
                 tension: 0.1,
                 fill: {
@@ -237,10 +247,7 @@ function renderChart(prices, payoffs, breakEven) {
             scales: {
                 x: {
                     type: "linear",
-                    ticks: {
-                        maxTicksLimit: 8,
-                        callback: v => `$${v.toFixed(0)}`,
-                    },
+                    ticks: { maxTicksLimit: 7, callback: v => `$${v.toFixed(0)}` },
                     grid: { color: "rgba(0,0,0,0.05)" },
                     title: { display: true, text: "Stock Price at Expiration" },
                 },
@@ -260,7 +267,7 @@ function annotationPlugin(spot, breakEven) {
         id: "annotations",
         afterDraw(chart) {
             const { ctx, scales: { x, y } } = chart;
-            drawVLine(ctx, x, y, spot, "#6b7280", `Current $${spot.toFixed(0)}`);
+            drawVLine(ctx, x, y, spot, "#6b7280", `Now $${spot.toFixed(0)}`);
             if (typeof breakEven === "number") {
                 drawVLine(ctx, x, y, breakEven, "#f59e0b", `B/E $${breakEven.toFixed(0)}`, true);
             }
@@ -272,7 +279,6 @@ function annotationPlugin(spot, breakEven) {
 function drawVLine(ctx, xScale, yScale, value, color, label, dashed = false) {
     const xPx = xScale.getPixelForValue(value);
     if (xPx < xScale.left || xPx > xScale.right) return;
-
     ctx.save();
     ctx.beginPath();
     if (dashed) ctx.setLineDash([6, 4]);
@@ -282,11 +288,10 @@ function drawVLine(ctx, xScale, yScale, value, color, label, dashed = false) {
     ctx.strokeStyle = color;
     ctx.stroke();
     ctx.setLineDash([]);
-
     ctx.fillStyle = color;
     ctx.font = "bold 10px system-ui, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(label, xPx, yScale.top - 6);
+    ctx.fillText(label, xPx, yScale.top - 5);
     ctx.restore();
 }
 
@@ -297,7 +302,7 @@ function drawHLine(ctx, xScale, yScale, value) {
     ctx.moveTo(xScale.left, yPx);
     ctx.lineTo(xScale.right, yPx);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(0,0,0,0.25)";
+    ctx.strokeStyle = "rgba(0,0,0,0.2)";
     ctx.stroke();
     ctx.restore();
 }

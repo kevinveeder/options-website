@@ -56,15 +56,38 @@
     <!-- ── Content ────────────────────────────────────────────────────── -->
     <section class="content">
 
-        <div class="strategy-info">
+        <!-- 1. What is it -->
+        <div class="card" id="card-overview">
             <h2 id="strategy-name"></h2>
-            <p id="strategy-description"></p>
-            <div id="key-points" class="key-points"></div>
+            <p class="hook" id="strategy-hook"></p>
+            <p class="description" id="strategy-description"></p>
+        </div>
+
+        <!-- 2. How it works (plain mechanics) -->
+        <div class="card" id="card-mechanics">
+            <h3 class="card-title">How it works</h3>
             <ul id="mechanics-list" class="mechanics-list"></ul>
         </div>
 
-        <div class="chart-container">
-            <p class="chart-note">Payoff shown per share at expiration · 1 contract = 100 shares</p>
+        <!-- 3. Live example with current values -->
+        <div class="card card-example" id="card-example">
+            <h3 class="card-title">Walk me through it</h3>
+            <p class="example-context" id="example-context"></p>
+            <ol id="example-steps" class="example-steps"></ol>
+        </div>
+
+        <!-- 4. Key numbers -->
+        <div class="card" id="card-numbers">
+            <h3 class="card-title">Key numbers</h3>
+            <div id="key-points" class="key-points"></div>
+        </div>
+
+        <!-- 5. Payoff chart — last -->
+        <div class="card chart-container" id="card-chart">
+            <h3 class="card-title chart-title">
+                Payoff at expiration
+                <span class="chart-subtitle">per share · 1 contract = 100 shares</span>
+            </h3>
             <canvas id="payoff-chart"></canvas>
         </div>
 
@@ -75,7 +98,6 @@
     For educational purposes only. This is not financial advice. Options trading involves substantial risk and is not suitable for all investors.
 </footer>
 
-<!-- Server-side config passed to JS -->
 <script>
     const SERVER_STRATEGIES = {{ strategies | tojson }};
     const DEFAULT_TICKER    = {{ config.default_ticker | tojson }};

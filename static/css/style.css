@@ -19,7 +19,8 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
@@ -51,6 +52,7 @@ header .subtitle {
 main {
     display: flex;
     flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
@@ -182,33 +184,93 @@ input[type="range"] {
 /* ── Content ─────────────────────────────────────────────────────────────── */
 .content {
     flex: 1;
+    min-width: 0;
+    min-height: 0;
     overflow-y: auto;
     padding: 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 14px;
 }
 
-/* Strategy info card */
-.strategy-info {
+/* Cards */
+.card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px 20px;
+    padding: 16px 20px;
 }
 
-.strategy-info h2 {
-    font-size: 1.1rem;
+.card h2 {
+    font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     letter-spacing: -0.01em;
 }
 
-.strategy-info > p {
+.hook {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.description {
     font-size: 0.82rem;
     color: var(--muted);
     line-height: 1.65;
-    margin-bottom: 14px;
+}
+
+.card-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+/* Example walkthrough card */
+.card-example { border-left: 3px solid var(--primary); }
+
+.example-context {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.example-steps {
+    list-style: none;
+    counter-reset: steps;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.example-steps li {
+    counter-increment: steps;
+    display: flex;
+    gap: 10px;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text);
+}
+
+.example-steps li::before {
+    content: counter(steps);
+    min-width: 20px;
+    height: 20px;
+    background: var(--primary-bg);
+    color: var(--primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 /* Key points */
@@ -264,16 +326,31 @@ input[type="range"] {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px 20px;
-    flex: 1;
-    min-height: 320px;
+    height: 300px;
+    flex-shrink: 0;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-.chart-note {
-    font-size: 0.68rem;
+#payoff-chart {
+    flex: 1;
+    min-height: 0;
+}
+
+.chart-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.chart-subtitle {
+    font-size: 0.65rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
     color: var(--muted);
-    text-align: right;
-    margin-bottom: 6px;
 }
 
 /* Disclaimer */
@@ -287,7 +364,8 @@ footer {
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+    body { height: auto; overflow: visible; }
     main { flex-direction: column; overflow: visible; }
     .controls {
         width: 100%;
@@ -296,5 +374,5 @@ footer {
     }
     .content { padding: 14px 16px; }
     .key-points { flex-wrap: wrap; }
-    .chart-container { min-height: 280px; }
+    .chart-container { height: 260px; }
 }

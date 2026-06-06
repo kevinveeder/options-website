@@ -12,6 +12,7 @@ APP_CONFIG = {
 STRATEGIES = {
     "long_call": {
         "name": "Long Call",
+        "hook": "Bet a stock will go up — limited risk, unlimited upside.",
         "description": (
             "A long call gives you the right — but not the obligation — to buy 100 shares "
             "at the strike price before expiration. You profit when the stock rises above "
@@ -50,6 +51,7 @@ STRATEGIES = {
 
     "long_put": {
         "name": "Long Put",
+        "hook": "Bet a stock will fall — portfolio insurance or a bearish play.",
         "description": (
             "A long put gives you the right — but not the obligation — to sell 100 shares "
             "at the strike price before expiration. It profits when the stock falls and is "
@@ -88,6 +90,7 @@ STRATEGIES = {
 
     "covered_call": {
         "name": "Covered Call",
+        "hook": "Already own the stock? Collect extra income by selling someone else the upside.",
         "description": (
             "A covered call is an income strategy where you own the stock and sell a call "
             "option against it. You collect the premium immediately, but agree to sell your "
@@ -126,6 +129,7 @@ STRATEGIES = {
 
     "bull_call_spread": {
         "name": "Bull Call Spread",
+        "hook": "Moderately bullish? Reduce your cost by capping your max profit.",
         "description": (
             "A bull call spread buys a call at a lower strike and simultaneously sells a "
             "call at a higher strike. This reduces the net premium paid vs. a straight long "
