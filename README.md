@@ -1,5 +1,5 @@
 ---
-title: Options Strategies
+title: Options
 emoji: 📈
 colorFrom: blue
 colorTo: indigo
