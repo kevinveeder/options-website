@@ -26,4 +26,4 @@ and all values update in real time.
 
 ## Content
 
-- [Options Strategies — Home](https://options-website.onrender.com): All strategies, interactive examples, live prices
+- [Options Strategies — Home](https://options.veederville.com): All strategies, interactive examples, live prices

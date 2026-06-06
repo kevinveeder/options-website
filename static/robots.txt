@@ -23,4 +23,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://options-website.onrender.com/sitemap.xml
+Sitemap: https://options.veederville.com/sitemap.xml
