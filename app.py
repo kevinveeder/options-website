@@ -1,12 +1,43 @@
 from flask import Flask, jsonify, render_template
 import yfinance as yf
 import time
+import threading
+import os
+from datetime import datetime, timedelta
 
-from config import APP_CONFIG, STRATEGIES, DEFAULT_TICKERS
+import requests as _requests
+
+from config import APP_CONFIG, STRATEGIES, DEFAULT_TICKERS, \
+                   HEALTHCHECK_URL, HEALTHCHECK_HOUR, HEALTHCHECK_MIN
 
 app = Flask(__name__)
 _price_cache: dict = {}
 
+
+# ── Healthcheck ping ─────────────────────────────────────────────────────────
+
+def _healthcheck_loop():
+    """Ping HEALTHCHECK_URL once daily at HEALTHCHECK_HOUR:HEALTHCHECK_MIN UTC."""
+    while True:
+        now = datetime.utcnow()
+        target = now.replace(hour=HEALTHCHECK_HOUR, minute=HEALTHCHECK_MIN,
+                             second=0, microsecond=0)
+        if target <= now:
+            target += timedelta(days=1)
+        time.sleep((target - now).total_seconds())
+        try:
+            _requests.get(HEALTHCHECK_URL, timeout=10)
+        except Exception:
+            pass
+
+
+# Start the ping thread once — guard against Flask's debug reloader double-spawn
+if HEALTHCHECK_URL and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
+    _t = threading.Thread(target=_healthcheck_loop, daemon=True)
+    _t.start()
+
+
+# ── Stock price ───────────────────────────────────────────────────────────────
 
 def fetch_price(ticker: str) -> dict:
     ticker = ticker.upper().strip()
@@ -26,6 +57,8 @@ def fetch_price(ticker: str) -> dict:
     except Exception as exc:
         return {"error": str(exc)}
 
+
+# ── Routes ────────────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():

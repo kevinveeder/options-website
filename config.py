@@ -179,3 +179,7 @@ STRATEGIES = {
 }
 
 DEFAULT_TICKERS = ["AAPL", "TSLA", "SPY", "NVDA", "MSFT", "AMZN", "GOOGL"]
+
+HEALTHCHECK_URL  = "http://jobwatch.veederville.com/ping/c5f164ed-a698-40a8-a526-3dba42c6dc06"
+HEALTHCHECK_HOUR = 0   # UTC hour to fire (0 = midnight)
+HEALTHCHECK_MIN  = 30  # UTC minute → 12:30 AM UTC daily
