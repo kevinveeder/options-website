@@ -2,7 +2,7 @@
 
 import os
 
-SITE_URL        = os.environ.get("SITE_URL", "https://options-website.onrender.com")
+SITE_URL        = os.environ.get("SITE_URL", "https://options.veederville.com")
 GOATCOUNTER_URL = os.environ.get("GOATCOUNTER_URL", "")  # e.g. https://yourcode.goatcounter.com
 
 APP_CONFIG = {
