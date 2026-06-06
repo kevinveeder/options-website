@@ -6,7 +6,7 @@ colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-short_description: Interactive options strategy education with live stock prices
+short_description: Learn options strategies with live stock prices
 ---
 
 # Options Strategies
