@@ -177,13 +177,16 @@ function renderExample(calc) {
 // ── Key numbers ───────────────────────────────────────────────────────────────
 
 function renderKeyPoints(kp) {
-    const fmtMoney = v => (typeof v === "string") ? v : `${v >= 0 ? "+" : ""}$${Math.abs(v).toFixed(2)}`;
-    const fmtPrice = v => (typeof v === "string") ? v : `$${v.toFixed(2)}`;
+    const fmtMoney  = v => (typeof v === "string") ? v : `${v >= 0 ? "+" : ""}$${Math.abs(v).toFixed(2)}`;
+    const fmtPrice  = v => (typeof v === "string") ? v : `$${v.toFixed(2)}`;
+    const fmtBreakEven = be => Array.isArray(be)
+        ? be.map(fmtPrice).join(" & ")
+        : fmtPrice(be);
 
     document.getElementById("key-points").innerHTML = `
         <div class="key-point">
             <span class="key-label">Break-even at expiration</span>
-            <span class="key-value">${fmtPrice(kp.breakEven)}</span>
+            <span class="key-value">${fmtBreakEven(kp.breakEven)}</span>
         </div>
         <div class="key-point">
             <span class="key-label">Max profit</span>
@@ -268,9 +271,12 @@ function annotationPlugin(spot, breakEven) {
         afterDraw(chart) {
             const { ctx, scales: { x, y } } = chart;
             drawVLine(ctx, x, y, spot, "#6b7280", `Now $${spot.toFixed(0)}`);
-            if (typeof breakEven === "number") {
-                drawVLine(ctx, x, y, breakEven, "#f59e0b", `B/E $${breakEven.toFixed(0)}`, true);
-            }
+            const bes = Array.isArray(breakEven) ? breakEven : [breakEven];
+            bes.forEach(be => {
+                if (typeof be === "number") {
+                    drawVLine(ctx, x, y, be, "#f59e0b", `B/E $${be.toFixed(0)}`, true);
+                }
+            });
             drawHLine(ctx, x, y, 0);
         },
     };

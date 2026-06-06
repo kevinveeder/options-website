@@ -181,6 +181,153 @@ STRATEGIES = {
             },
         ],
     },
+
+    "long_straddle": {
+        "name": "Long Straddle",
+        "hook": "Bet on a big move — you don't care which direction, just that it moves.",
+        "description": (
+            "A long straddle buys both a call and a put at the same strike price. You profit "
+            "if the stock makes a large move in either direction before expiration. The catch: "
+            "you pay for two options, so the stock needs to move significantly just to break even."
+        ),
+        "mechanics": [
+            "Buy a call AND a put at the same strike price",
+            "Pay premium for both legs — this is your total cost and max loss",
+            "Profit if the stock moves far enough in either direction",
+            "Two break-even points: one above and one below the strike",
+            "Popular before earnings announcements or major events",
+        ],
+        "params": [
+            {
+                "id": "strike_pct",
+                "label": "Strike Price",
+                "min": 85,
+                "max": 115,
+                "default": 100,
+                "step": 1,
+                "format": "pct",
+                "description": "Usually set at-the-money (100% = current price) for both legs",
+            },
+            {
+                "id": "total_premium_pct",
+                "label": "Total Premium Paid",
+                "min": 2,
+                "max": 20,
+                "default": 7,
+                "step": 0.5,
+                "format": "pct",
+                "description": "Combined cost of the call + put as % of current price",
+            },
+        ],
+    },
+
+    "long_strangle": {
+        "name": "Long Strangle",
+        "hook": "Like a straddle but cheaper — you need a bigger move to profit.",
+        "description": (
+            "A long strangle buys an out-of-the-money call and an out-of-the-money put at "
+            "different strikes. It costs less than a straddle because both options are OTM, "
+            "but the stock needs to move even further to reach break-even."
+        ),
+        "mechanics": [
+            "Buy an OTM call at a higher strike — costs less than an ATM call",
+            "Buy an OTM put at a lower strike — costs less than an ATM put",
+            "Total cost is lower than a straddle",
+            "Needs a larger price move to profit than a straddle",
+            "Two break-even points, farther apart than a straddle",
+        ],
+        "params": [
+            {
+                "id": "call_strike_pct",
+                "label": "Call Strike (upper)",
+                "min": 100,
+                "max": 130,
+                "default": 110,
+                "step": 1,
+                "format": "pct",
+                "description": "OTM call strike as % of current price",
+            },
+            {
+                "id": "put_strike_pct",
+                "label": "Put Strike (lower)",
+                "min": 70,
+                "max": 100,
+                "default": 90,
+                "step": 1,
+                "format": "pct",
+                "description": "OTM put strike as % of current price",
+            },
+            {
+                "id": "total_premium_pct",
+                "label": "Total Premium Paid",
+                "min": 1,
+                "max": 15,
+                "default": 4,
+                "step": 0.5,
+                "format": "pct",
+                "description": "Combined cost of the call + put as % of current price",
+            },
+        ],
+    },
+
+    "iron_condor": {
+        "name": "Iron Condor",
+        "hook": "Bet the stock goes nowhere — collect premium while it stays in a range.",
+        "description": (
+            "An iron condor sells a put spread below the market and a call spread above it. "
+            "You collect a net credit upfront and keep it all if the stock stays inside your "
+            "range at expiration. It's one of the most popular strategies for low-volatility environments."
+        ),
+        "mechanics": [
+            "Sell a put at the lower boundary — collect premium",
+            "Buy a put further below — limits your downside risk",
+            "Sell a call at the upper boundary — collect premium",
+            "Buy a call further above — limits your upside risk",
+            "Keep the net credit if the stock stays inside the range",
+        ],
+        "params": [
+            {
+                "id": "lower_pct",
+                "label": "Lower Boundary (short put)",
+                "min": 75,
+                "max": 98,
+                "default": 92,
+                "step": 1,
+                "format": "pct",
+                "description": "Short put strike — lower edge of your profit zone",
+            },
+            {
+                "id": "upper_pct",
+                "label": "Upper Boundary (short call)",
+                "min": 102,
+                "max": 125,
+                "default": 108,
+                "step": 1,
+                "format": "pct",
+                "description": "Short call strike — upper edge of your profit zone",
+            },
+            {
+                "id": "wing_pct",
+                "label": "Wing Width",
+                "min": 2,
+                "max": 15,
+                "default": 5,
+                "step": 1,
+                "format": "pct",
+                "description": "How far OTM your long options sit — limits max loss",
+            },
+            {
+                "id": "net_credit_pct",
+                "label": "Net Credit Received",
+                "min": 0.5,
+                "max": 6,
+                "default": 2,
+                "step": 0.5,
+                "format": "pct",
+                "description": "Premium collected upfront as % of current price",
+            },
+        ],
+    },
 }
 
 DEFAULT_TICKERS = ["AAPL", "TSLA", "SPY", "NVDA", "MSFT", "AMZN", "GOOGL"]

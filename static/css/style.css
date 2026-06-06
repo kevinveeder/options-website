@@ -361,6 +361,15 @@ footer {
     border-top: 1px solid var(--border);
     background: var(--surface);
     flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-credit {
+    font-size: 0.62rem;
+    color: var(--border);
+    letter-spacing: 0.04em;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
