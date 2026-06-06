@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.title }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>{{ config.title }}</h1>
+    <span class="subtitle">{{ config.subtitle }}</span>
+</header>
+
+<main>
+    <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+    <aside class="controls">
+
+        <div class="control-section">
+            <span class="section-label">Strategy</span>
+            <div class="strategy-buttons">
+                {% for key, strat in strategies.items() %}
+                <button class="strategy-btn" data-strategy="{{ key }}">{{ strat.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="control-section">
+            <span class="section-label">Stock</span>
+            <div class="ticker-input">
+                <input type="text" id="ticker-input"
+                       placeholder="Ticker…" value="{{ config.default_ticker }}"
+                       maxlength="10" autocomplete="off" spellcheck="false">
+                <button id="fetch-price-btn">Get Price</button>
+            </div>
+            <div class="quick-tickers">
+                {% for ticker in default_tickers %}
+                <button class="ticker-chip" data-ticker="{{ ticker }}">{{ ticker }}</button>
+                {% endfor %}
+            </div>
+            <div id="price-display">
+                <span class="ticker-name"></span>
+                <span class="ticker-price"></span>
+            </div>
+        </div>
+
+        <div class="control-section" id="sliders-section">
+            <span class="section-label">Parameters</span>
+            <div id="sliders-container"></div>
+        </div>
+
+    </aside>
+
+    <!-- ── Content ────────────────────────────────────────────────────── -->
+    <section class="content">
+
+        <div class="strategy-info">
+            <h2 id="strategy-name"></h2>
+            <p id="strategy-description"></p>
+            <div id="key-points" class="key-points"></div>
+            <ul id="mechanics-list" class="mechanics-list"></ul>
+        </div>
+
+        <div class="chart-container">
+            <p class="chart-note">Payoff shown per share at expiration · 1 contract = 100 shares</p>
+            <canvas id="payoff-chart"></canvas>
+        </div>
+
+    </section>
+</main>
+
+<footer>
+    For educational purposes only. This is not financial advice. Options trading involves substantial risk and is not suitable for all investors.
+</footer>
+
+<!-- Server-side config passed to JS -->
+<script>
+    const SERVER_STRATEGIES = {{ strategies | tojson }};
+    const DEFAULT_TICKER    = {{ config.default_ticker | tojson }};
+    const PRICE_RANGE_PCT   = {{ config.price_range_pct }};
+    const CHART_POINTS      = {{ config.chart_points }};
+</script>
+<script src="/static/js/strategies.js"></script>
+<script src="/static/js/app.js"></script>
+
+</body>
+</html>

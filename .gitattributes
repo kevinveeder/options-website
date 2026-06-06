@@ -1,0 +1,22 @@
+# Normalize line endings to LF on commit (works cross-platform)
+* text=auto eol=lf
+
+# Python
+*.py    text eol=lf
+*.txt   text eol=lf
+*.md    text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+
+# These are binary — never mangle them
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
